@@ -11,16 +11,6 @@ walkthrough below!
 
 ## Step 0: Setup MicroDonuts
 
-### Getting it
-Clone this repository and build the jar file (for this, Maven must be
-installed):
-
-```
-git clone git@github.com:opentracing-contrib/java-opentracing-walkthrough.git
-cd java-opentracing-walkthrough/microdonuts
-mvn package
-```
-
 ### Running
 
 MicroDonuts has two server components, `API` and `Kitchen`, which
@@ -28,7 +18,7 @@ communicate each other over HTTP - they are, however, part of
 the same process:
 
 ```
-cd java-opentracing-walkthrough/microdonuts
+cd microdonuts Demo/microdonuts
 mvn package exec:exec
 ```
 
