@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  hotrod:
+    image: jaegertracing/example-hotrod:latest
+    ports: 
+      - "8080:8080"
+    command: ["all"]
+    environment:
+      - JAEGER_ENDPOINT=http://docker.for.mac.localhost:31714/api/traces
+    networks:
+      - jaeger-example
+
+networks:
+  jaeger-example:
