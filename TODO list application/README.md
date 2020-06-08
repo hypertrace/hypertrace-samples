@@ -45,3 +45,5 @@ The app itself is a simple TODO app that additionally authenticates users. Thank
 | ![space-1.jpg](https://i.ibb.co/hWp0wN2/Screenshot-2020-06-04-at-10-27-43-AM.png) | 
 |:--:| 
 | *TODO Application UI* |
+
+### Are you facing any issue with this? Let's discuss it here: 
