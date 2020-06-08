@@ -52,3 +52,5 @@ As you can see in next section, the architecture of the sock store application w
 | ![space-1.jpg](https://s3.amazonaws.com/fininity.tech/DT/ss2.png) | 
 |:--:| 
 | *Order Page* |
+
+### Are you facing any issue with this? Let's discuss it here:
