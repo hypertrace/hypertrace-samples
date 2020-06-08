@@ -257,7 +257,7 @@ As you can see in next section, the architecture of the sock store application w
 |:--:| 
 | *Sock Shop Home Page* |
 
-| ![space-1.jpg](https://s3.amazonaws.com/fininity.tech/DT/ss1.png) | 
+| ![space-1.jpg](https://s3.amazonaws.com/fininity.tech/DT/ss2.png) | 
 |:--:| 
 | *Order Page* |
 
