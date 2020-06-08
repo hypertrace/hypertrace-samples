@@ -74,3 +74,5 @@ by deploying the [release manifest](./release) directly to an existing cluster.
 | Home Page                                                                                                         | Checkout Screen                                                                                                    |
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | [![Screenshot of store homepage](https://raw.githubusercontent.com/JBAhire/HyperTrace-samples/master/Online_Boutique_demo/docs/img/online-boutique-frontend-1.png?token=AGKW2PCHE4XEIIXRO5F5VMS63JCM2)]() | [![Screenshot of checkout screen](https://s3.amazonaws.com/fininity.tech/DT/online-boutique-frontend-2.png)]() |
+
+### Are you facing any issue with this? Let's discuss it here:
