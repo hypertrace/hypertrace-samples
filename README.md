@@ -74,6 +74,8 @@ by deploying the [release manifest](./release) directly to an existing cluster.
    ```sh
    kubectl get service/frontend-external
    ```
+   
+### Have a problem? Lets' discuss it here: 
 
 ### Screenshots
 
@@ -149,6 +151,8 @@ docker run \
 
 Then open http://127.0.0.1:8080 and you can play around with HotROD app!
 
+### Have a problem? Lets' discuss it here: 
+
 ### Screenshots
 
 
@@ -199,6 +203,8 @@ The app itself is a simple TODO app that additionally authenticates users. Thank
 - Clone the repo using `git clone https://github.com/JBAhire/microservice-app-example`
 - Run `docker-compose up`
 - Then go to http://127.0.0.1:8080 for web UI. 
+
+### Have a problem? Lets' discuss it here: 
 
 ### Screenshots
 
@@ -251,6 +257,8 @@ As you can see in next section, the architecture of the sock store application w
 3. Once all your pods are up and running you can visit `http://localhost:30001` to see sock-store app.
 4. login using username =`user` and password = `password`. 
 5. You are ready to buy some awesome socks from your own store!
+
+### Have a problem? Lets' discuss it here: 
 
 
 ### Screenshots
