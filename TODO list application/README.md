@@ -2,7 +2,7 @@
 
 ### Industry: Consumer
 
-### Learning objective
+### Learning objectives
 - What are the challenges introduced by microservices architectures?
 - How to Instrument polyglot microservice application?
 - How to evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.?
