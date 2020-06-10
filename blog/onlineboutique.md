@@ -10,7 +10,6 @@
 - Learn to create production-ready deployments.
 - Learn to deploy your application on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
 - Learn to troubleshoot the app for issues.
-- Learn to use APM
 
 
 
