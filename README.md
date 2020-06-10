@@ -10,13 +10,13 @@ In this article, we will check out some of the best microservices demo apps!
 ### Created by: [Google cloud platform](https://github.com/GoogleCloudPlatform/microservices-demo)
 
 ### Learning objectives:
-- How to deploy your application on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
-- what is gRPC and How to use gRPC? Microservices use a high volume of gRPC calls to communicate to each other.
-- How to get your application to work with istio service mesh.
-- What is distributed tracing? Most services in this application are instrumented using OpenCensus trace interceptors for gRPC/HTTP so you can learn about tracing as well. 
-- How to use APM?
-- How to deploy application to Kubernetes with a single command using Skaffold.
-- You will also learn about Synthetic Load Generation as the application demo comes with a background job that creates realistic usage patterns on the website using Locust load generator.
+- How to create polyglot microservices app?
+- Unerstanding patterns and complexity of polyglot app.
+- Learn to create production-ready deployments.
+- Learn to deploy your application on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
+- Learn to troubleshoot the app for issues.
+- Learn to use APM
+
 
 ### Introduction
 
@@ -57,7 +57,26 @@ languages that talk to each other over gRPC.
 | [checkoutservice](./src/checkoutservice)             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
 | [recommendationservice](./src/recommendationservice) | Python        | Recommends other products based on what's given in the cart.                                                                      |
 | [adservice](./src/adservice)                         | Java          | Provides text ads based on given context words.                                                                                   |
-| [loadgenerator](./src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
+| [loadgenerator](./src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.|
+
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patterns:
+   - Distributed tracing
+   - Log aggregation
+   - Application metrics
+   - Health check API
+3. Deployment patterns:
+   - Service mesh
+   - Container
+4. Discovery
+   - Service registry
+5. Data pattern
+   - Shared database
+6. UI Patterns
+   - client-side UI composition
+7. Testing
+   - Service component test
 
 ### Get it running:
 Instruction to run app locally using pre-built container images: 
@@ -94,14 +113,11 @@ by deploying the [release manifest](./release) directly to an existing cluster.
 
 ### Learning objectives:
 
-- How to discover architecture of the whole system via data-driven dependency diagram?
-- How to view request timeline & errors, understand how the app works?
-- how to find sources of latency, lack of concurrency?
-- How to achieve highly contextualized logging?
-- How to use baggage propagation to
-    - Diagnose inter-request contention (queueing)
-    - Attribute time spent in a service
-- How to use open source libraries with OpenTracing integration to get vendor-neutral instrumentation for free?
+- Learn to create complex microservice app with number of services. 
+- Learn to instrument your microservice application
+- Learn to discover architecture of the whole system using application flow diagram. 
+- Understand how app works and how to troublshoot for an issue in complex environemt.
+- Learn to use distributed tracing with highly contextualized logging.
 
 
 ### Introduction
@@ -131,6 +147,15 @@ HotROD is a demo “ride sharing” application. We have four customers, and by 
 | [Driver:FindNearest](./src/currencyservice)             | Go      | Then the frontend service makes an RPC request Driver::findNearest to the driver service. Without drilling more into the trace details we cannot tell which RPC frameworks is used to make this request, but we can guess it is not HTTP (it is actually made over TChannel). |
 | [Route Service](./src/paymentservice)               | Go      | After that the frontend service executes a series of HTTP GET requests to the /route endpoint of the route service.                                    |                                    |
 
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patters:
+   - Distributed tracing
+   - Log aggregation
+3. UI pattern
+   - Client-side UI composition
+4. Discovery patterns:
+   - Client side discovery
 
 ### Get it running
 
@@ -172,11 +197,10 @@ Then open http://127.0.0.1:8080 and you can play around with HotROD app!
 ### Created by: [Microservice app sample by Ivan](https://github.com/elgris/microservice-app-example)
 
 ### Learning objective
-- What are the challenges introduced by microservices architectures?
-- How to Instrument polyglot microservice application?
-- How to evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.?
-- How to run microservice application in polyglot environment?
-- What are gRPC APIs? How to add authentication to your application?
+- Learn how to create simple polyglot microservice app. 
+- Learn about challenges introduced by microservices architectures
+- Learn to Instrument polyglot microservice application
+- Learn to evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.
 
 ### Introduction
 
@@ -200,6 +224,18 @@ The app itself is a simple TODO app that additionally authenticates users. Thank
 | [Log Message Processor](./src/paymentservice)               | Go      |Log Message Processor is a very short queue processor written in Python. It's sole purpose is to read messages from Redis queue and print them to stdout.                                   |                                    |
 | [Zipkin](./src/paymentservice)               | NA      | Optional 3rd party system that aggregates traces produced by other components                                    |                                    |
 
+
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patters:
+   - Distributed tracing
+   - Log aggregation
+3. UI patterns
+   - Client-side UI composition
+4. Security
+   - Access token
+5. Discovery
+   - Client-side discovery
 
 
 
@@ -225,9 +261,9 @@ The app itself is a simple TODO app that additionally authenticates users. Thank
 ### Created by: [Weaveworks](https://github.com/microservices-demo/microservices-demo)
 
 ### Learning Objectives:
-- Demonstrate microservice best practices (and mistakes!)
+- Learn microservice best practices (and mistakes!)
 - How to be cross-platform i.e. deploy to all orchestrators?
-- Show the benefits of continuous integration/deployment
+- Learn the benefits of continuous integration/deployment
 - Demonstrate how dev-ops and microservices compliment each other
 - Provide a "real-life" testable application for various orchestration platforms
 
@@ -256,6 +292,29 @@ As you can see in next section, the architecture of the sock store application w
 | [Cart](./src/paymentservice)               | Go      | Maintains entries user added in cart with the help of MongoDB.                                    |                                    |
 | [Shipping](./src/paymentservice)               | NA      | Shipping service sends orders to RabbitMQ and then those go to queue master service.                            |                                    |
 
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patters:
+   - Distributed tracing
+   - Log aggregation
+   - Application metrics
+   - Health check API
+3. Deployment
+   - Service mesh
+   - Sidecar
+   - Multi services per host
+4. UI pattern
+   - Client-side UI composition
+5. Data patterns
+   - Database per service
+   - API composition
+6. Discovery:
+   - Client-side discovery
+7. Testing
+   - Service component test
+8. Security
+   - Access token
+   
 ### Get it running
 
 1. If you want to deploy on local machine with dockeer-desktop you first need to clone this repo using `git clone "repo"`
