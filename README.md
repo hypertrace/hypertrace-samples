@@ -7,6 +7,8 @@ In this article, we will check out some of the best microservices demo apps!
 ## A. Online Boutique (previously hipster shop)
 
 ### Industry: E-commerce
+### Created by: [Google cloud platform](https://github.com/GoogleCloudPlatform/microservices-demo)
+
 ### Learning objectives:
 - How to deploy your application on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
 - what is gRPC and How to use gRPC? Microservices use a high volume of gRPC calls to communicate to each other.
@@ -88,6 +90,8 @@ by deploying the [release manifest](./release) directly to an existing cluster.
 ## B. HotROD app:
 
 ### Industry: Consumer [Ride booking platform]
+### Created by: [Jaeger Demo](https://github.com/jaegertracing/jaeger/tree/master/examples/hotrod)
+
 ### Learning objectives:
 
 - How to discover architecture of the whole system via data-driven dependency diagram?
@@ -165,6 +169,7 @@ Then open http://127.0.0.1:8080 and you can play around with HotROD app!
 ## C. Todo List Application with Auth service
 
 ### Industry: Consumer
+### Created by: [Microservice app sample by Ivan](https://github.com/elgris/microservice-app-example)
 
 ### Learning objective
 - What are the challenges introduced by microservices architectures?
@@ -217,6 +222,7 @@ The app itself is a simple TODO app that additionally authenticates users. Thank
 ## Sock Shop by Weaveworks 
 
 ### Industry: E-Commerce
+### Created by: [Weaveworks](https://github.com/microservices-demo/microservices-demo)
 
 ### Learning Objectives:
 - Demonstrate microservice best practices (and mistakes!)
