@@ -1,16 +1,14 @@
 ## B. HotROD app:
 
 ### Industry: Consumer [Ride booking platform]
-### Learning objectives:
+### Created by: [Jaeger Demo](https://github.com/jaegertracing/jaeger/tree/master/examples/hotrod)
 
-- How to discover architecture of the whole system via data-driven dependency diagram?
-- How to view request timeline & errors, understand how the app works?
-- how to find sources of latency, lack of concurrency?
-- How to achieve highly contextualized logging?
-- How to use baggage propagation to
-    - Diagnose inter-request contention (queueing)
-    - Attribute time spent in a service
-- How to use open source libraries with OpenTracing integration to get vendor-neutral instrumentation for free?
+### Learning objectives:
+- Learn to create complex microservice app with number of services. 
+- Learn to instrument your microservice application
+- Learn to discover architecture of the whole system using application flow diagram. 
+- Understand how app works and how to troublshoot for an issue in complex environemt.
+- Learn to use distributed tracing with highly contextualized logging.
 
 
 ### Introduction
@@ -40,6 +38,15 @@ HotROD is a demo “ride sharing” application. We have four customers, and by 
 | [Driver:FindNearest](./src/currencyservice)             | Go      | Then the frontend service makes an RPC request Driver::findNearest to the driver service. Without drilling more into the trace details we cannot tell which RPC frameworks is used to make this request, but we can guess it is not HTTP (it is actually made over TChannel). |
 | [Route Service](./src/paymentservice)               | Go      | After that the frontend service executes a series of HTTP GET requests to the /route endpoint of the route service.                                    |                                    |
 
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patters:
+   - Distributed tracing
+   - Log aggregation
+3. UI pattern
+   - Client-side UI composition
+4. Discovery patterns:
+   - Client side discovery
 
 ### Get it running
 

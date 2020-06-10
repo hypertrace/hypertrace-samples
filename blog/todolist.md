@@ -1,13 +1,14 @@
 ## C. Todo List Application with Auth service
 
 ### Industry: Consumer
+### Created by: [Microservice app sample by Ivan](https://github.com/elgris/microservice-app-example)
 
 ### Learning objectives
-- What are the challenges introduced by microservices architectures?
-- How to Instrument polyglot microservice application?
-- How to evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.?
-- How to run microservice application in polyglot environment?
-- What are gRPC APIs? How to add authentication to your application?
+- Learn how to create simple polyglot microservice app. 
+- Learn about challenges introduced by microservices architectures
+- Learn to Instrument polyglot microservice application
+- Learn to evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.
+
 
 ### Introduction
 
@@ -31,7 +32,17 @@ The app itself is a simple TODO app that additionally authenticates users. Thank
 | [Log Message Processor](./src/paymentservice)               | Go      |Log Message Processor is a very short queue processor written in Python. It's sole purpose is to read messages from Redis queue and print them to stdout.                                   |                                    |
 | [Zipkin](./src/paymentservice)               | NA      | Optional 3rd party system that aggregates traces produced by other components                                    |                                    |
 
-
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patters:
+   - Distributed tracing
+   - Log aggregation
+3. UI patterns
+   - Client-side UI composition
+4. Security
+   - Access token
+5. Discovery
+   - Client-side discovery
 
 
 ### Get it running

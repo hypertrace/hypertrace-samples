@@ -1,14 +1,18 @@
 ## A. Online Boutique (previously hipster shop)
 
 ### Industry: E-commerce
+
+### Created by: [Google cloud platform](https://github.com/GoogleCloudPlatform/microservices-demo)
+
 ### Learning objectives:
-- How to deploy your application on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
-- what is gRPC and How to use gRPC? Microservices use a high volume of gRPC calls to communicate to each other.
-- How to get your application to work with istio service mesh.
-- What is distributed tracing? Most services in this application are instrumented using OpenCensus trace interceptors for gRPC/HTTP so you can learn about tracing as well. 
-- How to use APM?
-- How to deploy application to Kubernetes with a single command using Skaffold.
-- You will also learn about Synthetic Load Generation as the application demo comes with a background job that creates realistic usage patterns on the website using Locust load generator.
+- How to create polyglot microservices app?
+- Unerstanding patterns and complexity of polyglot app.
+- Learn to create production-ready deployments.
+- Learn to deploy your application on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
+- Learn to troubleshoot the app for issues.
+- Learn to use APM
+
+
 
 ### Introduction
 
@@ -50,6 +54,26 @@ languages that talk to each other over gRPC.
 | [recommendationservice](./src/recommendationservice) | Python        | Recommends other products based on what's given in the cart.                                                                      |
 | [adservice](./src/adservice)                         | Java          | Provides text ads based on given context words.                                                                                   |
 | [loadgenerator](./src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
+
+
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patterns:
+   - Distributed tracing
+   - Log aggregation
+   - Application metrics
+   - Health check API
+3. Deployment patterns:
+   - Service mesh
+   - Container
+4. Discovery
+   - Service registry
+5. Data pattern
+   - Shared database
+6. UI Patterns
+   - client-side UI composition
+7. Testing
+   - Service component test
 
 ### Get it running:
 Instruction to run app locally using pre-built container images: 

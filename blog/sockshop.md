@@ -1,11 +1,12 @@
 ## Sock Shop by Weaveworks 
 
 ### Industry: E-Commerce
+### Created by: [Weaveworks](https://github.com/microservices-demo/microservices-demo)
 
 ### Learning Objectives:
-- Demonstrate microservice best practices (and mistakes!)
+- Learn microservice best practices (and mistakes!)
 - How to be cross-platform i.e. deploy to all orchestrators?
-- Show the benefits of continuous integration/deployment
+- Learn the benefits of continuous integration/deployment
 - Demonstrate how dev-ops and microservices compliment each other
 - Provide a "real-life" testable application for various orchestration platforms
 
@@ -33,6 +34,29 @@ As you can see in next section, the architecture of the sock store application w
 | [Payment](./src/paymentservice)               | Go      |It helps to process payments and provides payment service authentication.                                    |                                    |
 | [Cart](./src/paymentservice)               | Go      | Maintains entries user added in cart with the help of MongoDB.                                    |                                    |
 | [Shipping](./src/paymentservice)               | NA      | Shipping service sends orders to RabbitMQ and then those go to queue master service.                            |                                    |
+
+### Microservices patterns:
+1. API Gateway pattern
+2. Observability patters:
+   - Distributed tracing
+   - Log aggregation
+   - Application metrics
+   - Health check API
+3. Deployment
+   - Service mesh
+   - Sidecar
+   - Multi services per host
+4. UI pattern
+   - Client-side UI composition
+5. Data patterns
+   - Database per service
+   - API composition
+6. Discovery:
+   - Client-side discovery
+7. Testing
+   - Service component test
+8. Security
+   - Access token
 
 ### Get it running
 
