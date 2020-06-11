@@ -2,339 +2,176 @@
 
 It's been a while since we started moving from monolithic applications to microservices based architecture. When you look at systems today you will find that this modern distributed services are large, complex, and increasingly built upon other similarly complex distributed services. 
 
-In this article, we will check out some of the best microservices demo apps!
+Let's first start with understanding one basic microservice app which will give us fair idea about what we are looking at and what microservice architecture means. 
 
-## A. Online Boutique (previously hipster shop)
+### Learning objectives
+- Learn to create some python flask api based microservices and make them call each other. 
+- Learn to instrument basic microservice app
+- Learn to deploy microservice application with kubernetes. 
 
-### Industry: E-commerce
-### Created by: [Google cloud platform](https://github.com/GoogleCloudPlatform/microservices-demo)
+### Tools we will be using
+1. Python
+2. Flask: Flask is a popular, extensible web microframework for building web applications with Python.
+3. Kubernetes
 
-### Learning objectives:
-- How to create polyglot microservices app?
-- Unerstanding patterns and complexity of polyglot app.
-- Learn to create production-ready deployments.
-- Learn to deploy your application on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
-- Learn to troubleshoot the app for issues.
-- Learn to use APM
+### Let's understand application flow and code
 
+This application is based on sample application available [here](https://github.com/MohamedMSaeed/tracing_flask_zipkin). 
 
-### Introduction
+Architecture for our final application will look something like below:
 
-**Online Boutique** is a cloud-native microservices demo application.
-Online Boutique consists of a 10-tier microservices application. Online boutique uses different microservices written in Go, c#, Python, Java and functions as an e-commerce website app, where users can browse items,
-add them to the cart, and purchase them. 
+![](https://miro.medium.com/max/1400/1*fJBmBYPBrCVwbbfDucCmtw.png)
 
-This demo has various ecommerce microservices like order page, cart, payment, shipping, recommendation though it doesn't operate under the scale as real world ecommerce platform which can have so many reasons to fail but this makes really good close to real-world case for our testing.
+#### How it works?
 
-If you are interested in complex microservices architectures you should look at structure of microservices at Amazon which look like below!
+We have 3 flask API's here. API-1 communicates with API-2 and API-3 and API-2 talks to API-3. We are trying to implement classic microservices scenario here. Let's look a bit into those API's:
 
-| ![space-1.jpg](https://divante.com/blog/wp-content/uploads/2019/07/unnamed-5.png) | 
-|:--:| 
-| *Structure of microservices at Amazon. Looks almost like a Death Star but is way more powerful.* |
+1. API-1
 
-`Note:` We have created this project by modifying some configs in [this](https://github.com/GoogleCloudPlatform/microservices-demo) demo app by Google Cloud Platform. 
-
-### Architecture
-
-**Online Boutique** is composed of many microservices written in different
-languages that talk to each other over gRPC.
-
-| ![space-1.jpg](https://s3.amazonaws.com/fininity.tech/DT/architecture-diagram.png) | 
-|:--:| 
-| *Microservices Architecture* |
-
-### Service Description Table
-
-| Service                                              | Language      | Description                                                                                                                       |
-| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [frontend](./src/frontend)                           | Go            | Exposes an HTTP server to serve the website. Does not require signup/login and generates session IDs for all users automatically. |
-| [cartservice](./src/cartservice)                     | C#            | Stores the items in the user's shopping cart in Redis and retrieves it.                                                           |
-| [productcatalogservice](./src/productcatalogservice) | Go            | Provides the list of products from a JSON file and ability to search products and get individual products.                        |
-| [currencyservice](./src/currencyservice)             | Node.js       | Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service. |
-| [paymentservice](./src/paymentservice)               | Node.js       | Charges the given credit card info (mock) with the given amount and returns a transaction ID.                                     |
-| [shippingservice](./src/shippingservice)             | Go            | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)                                 |
-| [emailservice](./src/emailservice)                   | Python        | Sends users an order confirmation email (mock).                                                                                   |
-| [checkoutservice](./src/checkoutservice)             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
-| [recommendationservice](./src/recommendationservice) | Python        | Recommends other products based on what's given in the cart.                                                                      |
-| [adservice](./src/adservice)                         | Java          | Provides text ads based on given context words.                                                                                   |
-| [loadgenerator](./src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.|
-
-### Microservices patterns:
-1. API Gateway pattern
-2. Observability patterns:
-   - Distributed tracing
-   - Log aggregation
-   - Application metrics
-   - Health check API
-3. Deployment patterns:
-   - Service mesh
-   - Container
-4. Discovery
-   - Service registry
-5. Data pattern
-   - Shared database
-6. UI Patterns
-   - client-side UI composition
-7. Testing
-   - Service component test
-
-### Get it running:
-Instruction to run app locally using pre-built container images: 
-
-This option offers you pre-built public container images that are easy to deploy
-by deploying the [release manifest](./release) directly to an existing cluster.
-
-**Prerequisite**: a running Kubernetes cluster (either local or on cloud).
-
-1. Clone this repository, and go to the repository directory
-2. Run `kubectl apply -f ./release/kubernetes-manifests.yaml` to deploy the app.
-3. Run `kubectl get pods` to see pods are in a Ready state.
-4. Find the `NodePort` of your application, then visit the application at `localhost:nodeport` on your
-   browser to confirm installation. 
-
-   ```sh
-   kubectl get service/frontend-external
-   ```
-   
-### Have a problem? Lets' discuss it here: 
-
-### Screenshots
-
-| Home Page                                                                                                         | Checkout Screen                                                                                                    |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [![Screenshot of store homepage](https://raw.githubusercontent.com/JBAhire/HyperTrace-samples/master/Online%20Botique%20Demo/docs/img/online-boutique-frontend-1.png?token=AGKW2PGEOOH4A56673JCDHS646BIO)]() | [![Screenshot of checkout screen](https://s3.amazonaws.com/fininity.tech/DT/online-boutique-frontend-2.png)]() |
+```python
+@app.before_request
+def log_request_info():
+    app.logger.debug('Headers: %s', request.headers)
+    app.logger.debug('Body: %s', request.get_data())
 
 
-
-## B. HotROD app:
-
-### Industry: Consumer [Ride booking platform]
-### Created by: [Jaeger Demo](https://github.com/jaegertracing/jaeger/tree/master/examples/hotrod)
-
-### Learning objectives:
-
-- Learn to create complex microservice app with number of services. 
-- Learn to instrument your microservice application
-- Learn to discover architecture of the whole system using application flow diagram. 
-- Understand how app works and how to troublshoot for an issue in complex environemt.
-- Learn to use distributed tracing with highly contextualized logging.
+@zipkin_client_span(service_name='api_01', span_name='call_api_02')
+def call_api_02():
+    headers = create_http_headers()
+    # k8s does not allow underscores in the service name
+    requests.get('http://api-02:5000/', headers=headers)
+    return 'OK'
 
 
-### Introduction
-If you don't live in Antarctica or Amazon jungles you might have came across Ride booking and sharing platforms like Uber, Lyft any many others available in your country. This platform are part of life for many people. But have your thought of how complicated this platforms can be? Let's just take a look at microservices architecture at uber:
+@zipkin_client_span(service_name='api_01', span_name='call_api_03_FROM_01')
+def call_api_03():
+    headers = create_http_headers()
+    requests.get('http://api-03:5000/', headers=headers)
+    return 'OK'
 
-| ![space-1.jpg](https://res.infoq.com/presentations/uber-microservices-distributed-tracing/en/slides/sl9-1567597621813.jpg) | 
-|:--:| 
-| *Microservices Architecture at Uber* |
-
-If you click a button at Uber, a transaction can hit that architecture which looks like this. It can touch hundreds of nodes, multiple types of surfaces from different business domains. This makes us realise how complicated applications in consumer domain can get over the period. And we are trying to replicate this complexity to some extent in this demo.
-
-HotROD is a demo “ride sharing” application. We have four customers, and by clicking one of the four buttons we summon a car to arrive to the customer’s location, perhaps to pick up a product and deliver it elsewhere. Once a request for a car is sent to the backend, it responds with the car’s license plate number and the expected time of arrival.
-
-
-### Architecture
-
-| ![space-1.jpg](https://miro.medium.com/max/4596/1*XLxS6v_BWwtU2cvbSsHFyQ.png) | 
-|:--:| 
-| *Microservices Architecture at Uber* |
-
-### Service Description
-| Service                                              | Language      | Description                                                                                                                       |
-| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [frontend](./src/frontend)                           | Go            |  The frontend services receives the external HTTP GET request at its /dispatch endpoint. It also makes HTTP GET request to the /customer endpoint of the customer service. At the end, frontend service returns the result to the external caller.|
-| [customer](./src/cartservice)                     | Go           | The customer service executes an SQL SELECT statement in MySQL. The results are returned back to the frontend service.                                                           |
-| [Driver](./src/productcatalogservice) | Go            | The driver service makes a series of calls to Redis. Some of those calls are highlighted with pink background, indicating failures.                        |
-| [Driver:FindNearest](./src/currencyservice)             | Go      | Then the frontend service makes an RPC request Driver::findNearest to the driver service. Without drilling more into the trace details we cannot tell which RPC frameworks is used to make this request, but we can guess it is not HTTP (it is actually made over TChannel). |
-| [Route Service](./src/paymentservice)               | Go      | After that the frontend service executes a series of HTTP GET requests to the /route endpoint of the route service.                                    |                                    |
-
-### Microservices patterns:
-1. API Gateway pattern
-2. Observability patters:
-   - Distributed tracing
-   - Log aggregation
-3. UI pattern
-   - Client-side UI composition
-4. Discovery patterns:
-   - Client side discovery
-
-### Get it running
-
-There are two ways you can run this application
-
-1. I just want to get it running way: 
-```bash
-docker run \
-  --rm \
-  --link jaeger \
-  --env JAEGER_ENDPOINT=http://docker.for.mac.localhost:14268/api/traces \
-  -p8080-8083:8080-8083 \
-  jaegertracing/example-hotrod:latest \
-  all
 ```
 
-2. I wanna see code and play with it way:
-* Clone this repo using ``.
-* Run HotROD demo with `docker-compose up`
-* Access Hypertrace UI at http://localhost and HotROD app at http://localhost:8080
-* Shutdown / cleanup with `docker-compose down`
+API-1 here as expected accepts the requests and calls API-2 and API-3 as expected.
 
-Then open http://127.0.0.1:8080 and you can play around with HotROD app!
+2. API-2
 
-### Have a problem? Lets' discuss it here: 
+```python
 
-### Screenshots
+@zipkin_client_span(service_name='api_02', span_name='call_api_03')
+def call_api_03():
+    headers = create_http_headers()
+    requests.get('http://api-03:5000/', headers=headers)
+    return 'OK'
 
+```
 
-| ![space-1.jpg](https://miro.medium.com/max/2000/1*tLGZLrpEE8gz6RZEVJRCbA.png) | 
-|:--:| 
-| *HotROD Application* |
+API-2 here calls API-3.
 
+3. API-3
 
+```python
+@zipkin_client_span(service_name='api_03', span_name='sleep_api_03')
+def sleep():
+    time.sleep(2)
+    return 'OK'
 
-## C. Todo List Application with Auth service
+```
 
-### Industry: Consumer
-### Created by: [Microservice app sample by Ivan](https://github.com/elgris/microservice-app-example)
-
-### Learning objective
-- Learn how to create simple polyglot microservice app. 
-- Learn about challenges introduced by microservices architectures
-- Learn to Instrument polyglot microservice application
-- Learn to evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.
-
-### Introduction
-
-We looked at two complex systems from two highly consumer facing industries. Let's look at something we all use in our daily lives. This is an example of web application comprising of several components communicating to each other. In other words, this is an example of microservice app. Why is it better than many other examples? Well, because these microservices are written in different languages. This approach gives you flexibility for running experiments in polyglot environment.
-
-The app itself is a simple TODO app that additionally authenticates users. Thanks to [Ivan Kirichenko](https://github.com/elgris) for making this and you can find the fork we used [here](). You can evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.
-
-### Architecture
-
-| ![space-1.jpg](https://user-images.githubusercontent.com/1905821/34918427-a931d84e-f952-11e7-85a0-ace34a2e8edb.png) | 
-|:--:| 
-| *TODO Application architecture* |
-
-### Service Description
-| Service                                              | Language      | Description                                                                                                                       |
-| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [frontend](./src/frontend)                           | JS           |  Frontend part is a Javascript application, provides UI. Created with VueJS.|
-| [Auth API](./src/cartservice)                     | Go           | Auth API is written in Go and provides authorization functionality. Generates JWT tokens to be used with other APIs.                                                           |
-| [TODO API](./src/productcatalogservice) | NodeJS           | TODOs API is written with NodeJS, provides CRUD functionality ove user's todo records. Also, it logs "create" and "delete" operations to Redis queue, so they can be later processed by Log Message Processor.                        |
-| [Users API](./src/currencyservice)             | Java      | Users API is a Spring Boot project written in Java. Provides user profiles. Does not provide full CRUD for simplicity, just getting a single user and all users. |
-| [Log Message Processor](./src/paymentservice)               | Go      |Log Message Processor is a very short queue processor written in Python. It's sole purpose is to read messages from Redis queue and print them to stdout.                                   |                                    |
-| [Zipkin](./src/paymentservice)               | NA      | Optional 3rd party system that aggregates traces produced by other components                                    |                                    |
+API-3 is very lazy and it just sleeps!
 
 
-### Microservices patterns:
-1. API Gateway pattern
-2. Observability patters:
-   - Distributed tracing
-   - Log aggregation
-3. UI patterns
-   - Client-side UI composition
-4. Security
-   - Access token
-5. Discovery
-   - Client-side discovery
+So, Now we have flask apps and we know the flow, how should we deply our apps?
 
+Let's create a dockerfile which will help us to build docker container to run the app!
 
+```python
+From python:3.7
 
-### Get it running
+COPY ./requirements.txt /app/requirements.txt
 
-- Clone the repo using `git clone https://github.com/JBAhire/microservice-app-example`
-- Run `docker-compose up`
-- Then go to http://127.0.0.1:8080 for web UI. 
+WORKDIR /app
 
-### Have a problem? Lets' discuss it here: 
+RUN pip install -r requirements.txt
 
-### Screenshots
+COPY . /app
 
-| ![space-1.jpg](https://i.ibb.co/hWp0wN2/Screenshot-2020-06-04-at-10-27-43-AM.png) | 
-|:--:| 
-| *TODO Application UI* |
+ENTRYPOINT [ "python" ]
 
+CMD [ "app.py" ]
+```
 
+once we run docker build for each app we will get docker images for each microservice or API. We can create a kubernetes deployment with this apps and get this app runnning with kubernetes but first thing we need for this is yaml file. 
 
-## Sock Shop by Weaveworks 
+Let's start creating yaml file:
 
-### Industry: E-Commerce
-### Created by: [Weaveworks](https://github.com/microservices-demo/microservices-demo)
+```python 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-python
 
-### Learning Objectives:
-- Learn microservice best practices (and mistakes!)
-- How to be cross-platform i.e. deploy to all orchestrators?
-- Learn the benefits of continuous integration/deployment
-- Demonstrate how dev-ops and microservices compliment each other
-- Provide a "real-life" testable application for various orchestration platforms
+# app_01
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplepython
+  namespace: simple-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simplepython
+  template:
+    metadata:
+      labels:
+        app: simplepython
+    spec:
+      containers:
+      - name: simplepython
+        image: python_app_01:0.1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-01
+  namespace: simple-python
+spec:
+  type: ClusterIP
+  selector:
+    app: simplepython
+  ports:
+  - name: http
+    port: 5000
+    targetPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: simplepython-external
+  namespace: simple-python
+spec:
+  type: LoadBalancer
+  selector:
+    app: simplepython
+  ports:
+  - name: simplepython-external-port
+    port: 5001
+    targetPort: 5000
+```
 
-### Introduction
+Similary you can add API-2 and API-3 and you have your yaml file ready.
 
-We have already seen one e-commerce example in our list and we know how complicated microservice architecture of e-commerce apps or websites can get. In this application we will be looking at full-fledged sock store with functinalities including user authentication, catalogue, recommendation, payment and ordering. This application is intended to aid the demonstration and testing of microservice and cloud native technologies. It is built using Spring Boot, Go kit and Node.js and is packaged in Docker containers. 
+Now just go to your console and run `kubectl apply -f deploy.yaml` once all pods are up and running access API-1 at `localhost:5001` and you have successfully deployed your first microservice app!
 
-As you can see in next section, the architecture of the sock store application was intentionally designed to provide as many microservices as possible. It not only helps us to demonstrate microservice best practices (and mistakes!) and how dev-ops and microservices compliment each other but it also provides a "real-life" testable application for various orchestration platforms.
+Was it fun? 
 
-### Architecture
+Learn more about microservices at microservices.io and if you want to checkout more cool and complex samples you can visit our colletion of best microservices below:
 
-| ![space-1.jpg](https://raw.githubusercontent.com/microservices-demo/microservices-demo.github.io/0ac7e0e579d83ce04e14f3b0942f7a463b72da74/assets/Architecture.png) | 
-|:--:| 
-| *Sock Shop Architecture* |
-
-
-### Service Description
-
-| Service                                              | Language      | Description                                                                                                                       |
-| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [frontend](./src/frontend)                           | NodeJS           |  Frontend part is a NodeJS application, provides UI and interacts with all other services except shipping using REST over HTTP|
-| [User](./src/cartservice)                     | Go           | Provide Customer login, register, retrieval, as well as card and address retrieval. It uses MongoDB to store and retrive information.                                                            |
-| [Catalogue](./src/productcatalogservice) | Go          | Catalogue maintains and drisplays catalogue of socks to users. It fetches data from MySQL DB.                         |
-| [Order](./src/currencyservice)             | Java      | It processses orders and it interacts with shipping and queue master service.  |
-| [Payment](./src/paymentservice)               | Go      |It helps to process payments and provides payment service authentication.                                    |                                    |
-| [Cart](./src/paymentservice)               | Go      | Maintains entries user added in cart with the help of MongoDB.                                    |                                    |
-| [Shipping](./src/paymentservice)               | NA      | Shipping service sends orders to RabbitMQ and then those go to queue master service.                            |                                    |
-
-### Microservices patterns:
-1. API Gateway pattern
-2. Observability patters:
-   - Distributed tracing
-   - Log aggregation
-   - Application metrics
-   - Health check API
-3. Deployment
-   - Service mesh
-   - Sidecar
-   - Multi services per host
-4. UI pattern
-   - Client-side UI composition
-5. Data patterns
-   - Database per service
-   - API composition
-6. Discovery:
-   - Client-side discovery
-7. Testing
-   - Service component test
-8. Security
-   - Access token
-   
-### Get it running
-
-1. If you want to deploy on local machine with dockeer-desktop you first need to clone this repo using `git clone "repo"`
-2. Run `kubect apply -f complete-demo.yml`
-3. Once all your pods are up and running you can visit `http://localhost:30001` to see sock-store app.
-4. login using username =`user` and password = `password`. 
-5. You are ready to buy some awesome socks from your own store!
-
-### Have a problem? Lets' discuss it here: 
-
-
-### Screenshots
-
-| ![space-1.jpg](https://s3.amazonaws.com/fininity.tech/DT/ss1.png) | 
-|:--:| 
-| *Sock Shop Home Page* |
-
-| ![space-1.jpg](https://s3.amazonaws.com/fininity.tech/DT/ss2.png) | 
-|:--:| 
-| *Order Page* |
+1. [Online Boutique Demo](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/onlineboutique.md)
+2. [Sock shop demo](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/sockshop.md)
+3. [TODO list demo](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/todolist.md)
+4. [HotROD app](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/hotrod.md)
 
 
 ## What's next?
