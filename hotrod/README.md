@@ -49,7 +49,6 @@ There are two ways you can run this application
 ```bash
 docker run \
   --rm \
-  --link jaeger \
   --env JAEGER_ENDPOINT=http://docker.for.mac.localhost:14268/api/traces \
   -p8080-8083:8080-8083 \
   jaegertracing/example-hotrod:latest \
