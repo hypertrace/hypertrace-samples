@@ -1,181 +1,75 @@
-# Best Microservice sample apps
+The best part in getting started with Hypertrace is that it's really quick! If you are already using a tracing system, you can start today. Hypertrace accepts all major data formats: Jaeger, OpenTracing, Zipkin, you name it. Even if you aren’t tracing yet, we have a bunch of sample apps you can start with, and a [chat room](https://hypertrace.slack.com) of excited people who want to meet you. Here we will tell you how you can get started with Online Boutique sample app which is one of our trace enabled sample applications.
 
-It's been a while since we started moving from monolithic applications to microservices based architecture. When you look at systems today you will find that this modern distributed services are large, complex, and increasingly built upon other similarly complex distributed services. 
+### Sample app: Online Boutique (created by Google Cloud)
 
-Let's first start with understanding one basic microservice app which will give us fair idea about what we are looking at and what microservice architecture means. 
+Online Boutique is one of our trace enabled sample applications. It includes typical ecommerce functionality, including a product catalog and a way for customers to check out in different currencies This application uses different languages to highlight the diversity in micro service architecture: Golang, C++, C#, Python, Java and other programming languages. Whatever your application is written in, you can see its requests in Hypertrace.
 
-### Learning objectives
-- Learn to create some python flask api based microservices and make them call each other. 
-- Learn to instrument basic microservice app
-- Learn to deploy microservice application with kubernetes. 
+If you want to start your own online boutique, sorry! This doesn’t include authentication, credit card processing and features in the real world! However, we can use this to understand hypertrace and get you started with distributed tracing. 
 
-### Tools we will be using
-1. Python
-2. Flask: Flask is a popular, extensible web microframework for building web applications with Python.
-3. Kubernetes
+#### Deployment instructions
 
-### Let's understand application flow and code
+Use pre-built public container images that are easy to deploy by deploying the [release manifest](./release) directly to an existing K8s cluster.
 
-This application is based on sample application available [here](https://github.com/MohamedMSaeed/tracing_flask_zipkin). 
+**Prerequisite**: A running Kubernetes cluster (local or cloud).
 
-Architecture for our final application will look something like below:
+1. `git clone https://github.com/hypertrace/hypertrace-samples.git`
+2. `cd online-boutique-demo`
+2. Run `kubectl apply -f ./release/kubernetes-manifests.yaml` to deploy the sample app.
+3. Run `kubectl get pods` to confirm pods are in a Ready state.
+4. Find the `NodePort` of your application, then visit the application at `localhost:nodeport` in your
+   browser to confirm installation. 
 
-![](https://miro.medium.com/max/1400/1*fJBmBYPBrCVwbbfDucCmtw.png)
+   ```sh
+   kubectl get service/frontend-external
+   ```
 
-#### How it works?
+#### This is how your application will look like!
 
-We have 3 flask API's here. API-1 communicates with API-2 and API-3 and API-2 talks to API-3. We are trying to implement classic microservices scenario here. Let's look a bit into those API's:
-
-1. API-1
-
-```python
-@app.before_request
-def log_request_info():
-    app.logger.debug('Headers: %s', request.headers)
-    app.logger.debug('Body: %s', request.get_data())
+| Home Page                                                                                                         | Checkout Screen                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [![Screenshot of store homepage](https://s3.amazonaws.com/fininity.tech/online-boutique-frontend-1-min.png)]() | [![Screenshot of checkout screen](https://s3.amazonaws.com/fininity.tech/DT/online-boutique-frontend-2.png)]() |
 
 
-@zipkin_client_span(service_name='api_01', span_name='call_api_02')
-def call_api_02():
-    headers = create_http_headers()
-    # k8s does not allow underscores in the service name
-    requests.get('http://api-02:5000/', headers=headers)
-    return 'OK'
+#### This is how your tracing data will look like on Hypertrace! 
+
+You can check out [UI & Platform overview](https://hypertrace-docs.netlify.app/docs/platform-ui/) section to get more details on features and see insights of online boutique app using Hypertrace. 
+
+## More information about Online Boutique application!
+#### Architecture
+
+**Online Boutique** is composed of many microservices written in different languages that talk to each other over gRPC.
+
+| ![space-1.jpg](https://s3.amazonaws.com/fininity.tech/DT/architecture-diagram.png) | 
+|:--:| 
+| *Microservices Architecture* |
+
+### Service Description Table
+
+| Service                                              | Language      | Description                                                                                                                       |
+| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [frontend](./online-boutique-demo/src/frontend)                           | Go            | Exposes an HTTP server to serve the website. Does not require signup/login and generates session IDs for all users automatically. |
+| [cartservice](./online-boutique-demo/src/cartservice)                     | C#            | Stores the items in the user's shopping cart in Redis and retrieves it.                                                           |
+| [productcatalogservice](./online-boutique-demo/src/productcatalogservice) | Go            | Provides the list of products from a JSON file and ability to search products and get individual products.                        |
+| [currencyservice](./online-boutique-demo/src/currencyservice)             | Node.js       | Converts one currency to another. Uses real values fetched from European Central Bank. It's the highest QPS service. |
+| [paymentservice](./online-boutique-demo/src/paymentservice)               | Node.js       | Charges the given credit card (mock) with the given amount and returns a transaction ID.                                     |
+| [shippingservice](./online-boutique-demo/src/shippingservice)             | Go            | Gives shipping cost estimates based on the shopping cart items. Ships items to the given address (mock)                                 |
+| [emailservice](./online-boutique-demo/src/emailservice)                   | Python        | Sends users an order confirmation email (mock).                                                                                   |
+| [checkoutservice](./online-boutique-demo/src/checkoutservice)             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
+| [recommendationservice](./online-boutique-demo/src/recommendationservice) | Python        | Recommends other products based on shopping cart items.                                                                      |
+| [adservice](./online-boutique-demo/src/adservice)                         | Java          | Provides text ads based on given context words.                                                                                   |
+| [loadgenerator](./online-boutique-demo/src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
 
 
-@zipkin_client_span(service_name='api_01', span_name='call_api_03_FROM_01')
-def call_api_03():
-    headers = create_http_headers()
-    requests.get('http://api-03:5000/', headers=headers)
-    return 'OK'
-
-```
-
-API-1 here as expected accepts the requests and calls API-2 and API-3 as expected.
-
-2. API-2
-
-```python
-
-@zipkin_client_span(service_name='api_02', span_name='call_api_03')
-def call_api_03():
-    headers = create_http_headers()
-    requests.get('http://api-03:5000/', headers=headers)
-    return 'OK'
-
-```
-
-API-2 here calls API-3.
-
-3. API-3
-
-```python
-@zipkin_client_span(service_name='api_03', span_name='sleep_api_03')
-def sleep():
-    time.sleep(2)
-    return 'OK'
-
-```
-
-API-3 is very lazy and it just sleeps!
 
 
-So, Now we have flask apps and we know the flow, how should we deply our apps?
+### Note: 
+- Are you facing any issue with this? Let's discuss it on [slack](https://hypertrace.slack.com)
+- If you want to try more apps you can try apps from this sample apps repo!
 
-Let's create a dockerfile which will help us to build docker container to run the app!
-
-```python
-From python:3.7
-
-COPY ./requirements.txt /app/requirements.txt
-
-WORKDIR /app
-
-RUN pip install -r requirements.txt
-
-COPY . /app
-
-ENTRYPOINT [ "python" ]
-
-CMD [ "app.py" ]
-```
-
-once we run docker build for each app we will get docker images for each microservice or API. We can create a kubernetes deployment with this apps and get this app runnning with kubernetes but first thing we need for this is yaml file. 
-
-Let's start creating yaml file:
-
-```python 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: simple-python
-
-# app_01
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: simplepython
-  namespace: simple-python
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: simplepython
-  template:
-    metadata:
-      labels:
-        app: simplepython
-    spec:
-      containers:
-      - name: simplepython
-        image: python_app_01:0.1.0
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: api-01
-  namespace: simple-python
-spec:
-  type: ClusterIP
-  selector:
-    app: simplepython
-  ports:
-  - name: http
-    port: 5000
-    targetPort: 5000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: simplepython-external
-  namespace: simple-python
-spec:
-  type: LoadBalancer
-  selector:
-    app: simplepython
-  ports:
-  - name: simplepython-external-port
-    port: 5001
-    targetPort: 5000
-```
-
-Similary you can add API-2 and API-3 and you have your yaml file ready.
-
-Now just go to your console and run `kubectl apply -f deploy.yaml` once all pods are up and running access API-1 at `localhost:5001` and you have successfully deployed your first microservice app!
-
-Was it fun? 
-
-Learn more about microservices at microservices.io and if you want to checkout more cool and complex samples you can visit our colletion of best microservices below:
-
-1. [Online Boutique Demo](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/onlineboutique.md)
-2. [Sock shop demo](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/sockshop.md)
-3. [TODO list demo](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/todolist.md)
-4. [HotROD app](https://github.com/JBAhire/HyperTrace-samples/blob/master/blog/hotrod.md)
+### Other samples:
+1. [Horod application](/hotrod/README.md)
+2. [todo-list-application](/todo-list-application/README.md)
 
 
-## What's next?
 
-We hope you enjoyed playing with these *Best Microservices Sample Apps* and learnt about microservice architecture from this apps. One of the biggest benefits of microservices is that each microservice can be developed, scaled, and deployed separately.You can replace or upgrade any part of system independently. While this makes things more modular one thing you might have observed is it also makes system much more complex at the same time. You can't simply go ahead and use traditional machine-centric monitoring and tracing mechanisms for management and development tasks in such a complex environments specifically because they are not effective and they cannot provide a coherent view of the work done by a distributed service’s nodes and dependencies. Because of this, tools that aid in understanding system behavior and reasoning about performance issues are invaluable in such a complex environment.
-
-There are multiple tools developed by multiple communities and developers to solve this problem and we will discuss about one such important tool in future but meanwhile, if you want to know more or have doubts about any of this application or you need any help with your own microservice architecture you can join this slack channel and we will be glad to help you out! 
+Are you still confused with **Instrumentation** jargon? Ahh! We have you covered! Jump to [Instrumentation](https://hypertrace-docs.netlify.app/docs/getting-started/instrumentation/) section which will tell you about what is instrumentation and how you can get started with instrumenting your application! 
