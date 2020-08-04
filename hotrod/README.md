@@ -58,7 +58,7 @@ docker run \
 2. I wanna see code and play with it way:
 * Clone this repo using ``.
 * Run HotROD demo with `docker-compose up`
-* Access Hypertrace UI at http://localhost and HotROD app at http://localhost:8080
+* Access Hypertrace UI at http://localhost:2020 and HotROD app at http://localhost:8080
 * Shutdown / cleanup with `docker-compose down`
 
 Then open http://127.0.0.1:8080 and you can play around with HotROD app!

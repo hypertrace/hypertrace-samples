@@ -20,19 +20,13 @@ from locust import HttpLocust, TaskSet, between
 products = [
     '0PUK6V6EV0',
     '1YMWWN1N4O',
-    '2ZYFJ3GM2N',
-    '66VCHSJNUP',
-    '6E92ZMYYFZ',
-    '9SIQT8TOJO',
-    'L9ECAV7KIM',
-    'LS4PSXUNUM',
-    'OLJCESPC7Z']
+    '2ZYFJ3GM2N']
 
 def index(l):
     l.client.get("/")
 
 def setCurrency(l):
-    currencies = ['EUR', 'USD', 'JPY', 'CAD']
+    currencies = ['USD', 'JPY']
     l.client.post("/setCurrency",
         {'currency_code': random.choice(currencies)})
 
@@ -47,7 +41,7 @@ def addToCart(l):
     l.client.get("/product/" + product)
     l.client.post("/cart", {
         'product_id': product,
-        'quantity': random.choice([1,2,3,4,5,10])})
+        'quantity': random.choice([1,2,3])})
 
 def checkout(l):
     addToCart(l)
@@ -70,10 +64,10 @@ class UserBehavior(TaskSet):
         index(self)
 
     tasks = {index: 1,
-        setCurrency: 2,
-        browseProduct: 10,
-        addToCart: 2,
-        viewCart: 3,
+        setCurrency: 1,
+        browseProduct: 1,
+        addToCart: 1,
+        viewCart: 1,
         checkout: 1}
 
 class WebsiteUser(HttpLocust):

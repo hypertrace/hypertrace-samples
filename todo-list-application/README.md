@@ -36,7 +36,8 @@ The app itself is a simple TODO app that additionally authenticates users. Thank
 
 ### Get it running
 
-- Clone the repo using `git clone https://github.com/JBAhire/microservice-app-example`
+- Clone the repo using `git clone https://github.com/hypertrace/hypertrace-samples`
+- cd `todo-list-application`
 - Run `docker-compose up`
 - Then go to http://127.0.0.1:8080 for web UI. 
 
