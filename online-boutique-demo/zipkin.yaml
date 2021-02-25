@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  zipkin:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+
+  hypertrace-collector:
+    image: hypertrace/hypertrace-collector:main
+    container_name: hypertrace-collector
+    command: ["--config=/config/collector-config.yaml"]
+    ports:
+      - 14268:14268 # Jaeger Thrift
+      - 14267:14267 # Jaeger HTTP
+    volumes:
+      - ./config/collector-config.yml:/config/collector-config.yaml
+    depends_on:
+      - zipkin
