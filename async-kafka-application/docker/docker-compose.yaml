@@ -2,14 +2,16 @@
 ## You can connect to 2020 port with /send end point
 version: "2.4"
 services:
-
   # this reads async messages from kafka consumer
   async-kafka-consumer:
     image: traceableronak/async-kafka-consumer:latest
     container_name: async-kafka-consumer
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - TRACE_EXPORTER_END_POINT=localhost:9411
+      # test by running locally hypertrace
+      - TRACE_EXPORTER_END_POINT=docker.for.mac.localhost:9411
+    networks:
+      - hypertrace_example
     depends_on:
       kafka-zookeeper:
         condition: service_healthy
@@ -20,10 +22,13 @@ services:
     container_name: async-kafka-producer-httpservice
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - TRACE_EXPORTER_END_POINT=localhost:9411
-      - PORT=2020
+      # test by running locally hypertrace
+      - TRACE_EXPORTER_END_POINT=docker.for.mac.localhost:9411
+      - PORT=2022
     ports:
-      - 2020:2020
+      - 2022:2022
+    networks:
+      - hypertrace_example
     depends_on:
       kafka-zookeeper:
         condition: service_healthy
@@ -34,8 +39,11 @@ services:
     image: hypertrace/kafka-zookeeper:main
     container_name: kafka-zookeeper
     networks:
-      default:
+      hypertrace_example:
         # prevents apps from having to use the hostname kafka-zookeeper
         aliases:
           - kafka
           - zookeeper
+
+networks:
+  hypertrace_example:
