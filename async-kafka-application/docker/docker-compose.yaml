@@ -1,0 +1,41 @@
+## For async application
+## You can connect to 2020 port with /send end point
+version: "2.4"
+services:
+
+  # this reads async messages from kafka consumer
+  async-kafka-consumer:
+    image: traceableronak/async-kafka-consumer:latest
+    container_name: async-kafka-consumer
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - TRACE_EXPORTER_END_POINT=localhost:9411
+    depends_on:
+      kafka-zookeeper:
+        condition: service_healthy
+
+  # this produces async messages to kafka on GET :2020/send request call
+  async-kafka-producer-httpservice:
+    image: traceableronak/async-kafka-producer-httpservice:latest
+    container_name: async-kafka-producer-httpservice
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - TRACE_EXPORTER_END_POINT=localhost:9411
+      - PORT=2020
+    ports:
+      - 2020:2020
+    depends_on:
+      kafka-zookeeper:
+        condition: service_healthy
+
+
+  # Kafka is used in this async demo app
+  kafka-zookeeper:
+    image: hypertrace/kafka-zookeeper:main
+    container_name: kafka-zookeeper
+    networks:
+      default:
+        # prevents apps from having to use the hostname kafka-zookeeper
+        aliases:
+          - kafka
+          - zookeeper
