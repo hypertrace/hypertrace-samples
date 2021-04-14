@@ -9,7 +9,7 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       # test by running locally hypertrace
-      - TRACE_EXPORTER_END_POINT=http://docker.for.mac.localhost:9411/api/v2/spans
+      - TRACE_EXPORTER_END_POINT=http://host.docker.internal:9411/api/v2/spans
     networks:
       - hypertrace_example
     depends_on:
@@ -23,7 +23,7 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       # test by running locally hypertrace
-      - TRACE_EXPORTER_END_POINT=http://docker.for.mac.localhost:9411/api/v2/spans
+      - TRACE_EXPORTER_END_POINT=http://host.docker.internal:9411/api/v2/spans
       - PORT=2022
     ports:
       - 2022:2022

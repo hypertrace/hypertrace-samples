@@ -1,3 +1,3 @@
 service_name: async-kafka-producer-httpservice
 reporting:
-  endpoint: http://TRACE_EXPORTER_END_POINT/api/v2/spans
+  endpoint: http://host.docker.internal:9411/api/v2/spans
