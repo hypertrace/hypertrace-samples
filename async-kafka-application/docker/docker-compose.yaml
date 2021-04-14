@@ -9,11 +9,11 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       # test by running locally hypertrace
-      - TRACE_EXPORTER_END_POINT=docker.for.mac.localhost:9411
+      - TRACE_EXPORTER_END_POINT=http://docker.for.mac.localhost:9411/api/v2/spans
     networks:
       - hypertrace_example
     depends_on:
-      kafka-zookeeper:
+      kafka-zookeeper-service:
         condition: service_healthy
 
   # this produces async messages to kafka on GET :2020/send request call
@@ -23,21 +23,21 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       # test by running locally hypertrace
-      - TRACE_EXPORTER_END_POINT=docker.for.mac.localhost:9411
+      - TRACE_EXPORTER_END_POINT=http://docker.for.mac.localhost:9411/api/v2/spans
       - PORT=2022
     ports:
       - 2022:2022
     networks:
       - hypertrace_example
     depends_on:
-      kafka-zookeeper:
+      kafka-zookeeper-service:
         condition: service_healthy
 
 
   # Kafka is used in this async demo app
-  kafka-zookeeper:
+  kafka-zookeeper-service:
     image: hypertrace/kafka-zookeeper:main
-    container_name: kafka-zookeeper
+    container_name: kafka-zookeeper-service
     networks:
       hypertrace_example:
         # prevents apps from having to use the hostname kafka-zookeeper
