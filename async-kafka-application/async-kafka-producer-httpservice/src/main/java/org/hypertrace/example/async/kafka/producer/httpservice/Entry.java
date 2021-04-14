@@ -12,7 +12,7 @@ public class Entry {
 
   public static void main(String[] args) {
     try {
-      Config config = ConfigFactory.parseResources("application.conf");
+      Config config = ConfigFactory.parseResources("application.conf").resolve();
       updateRuntime();
       server.init(config);
       server.start();
