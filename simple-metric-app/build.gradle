@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.hypertrace.docker-java-application-plugin' version "0.9.0"
+    id 'org.hypertrace.docker-publish-plugin' version "0.9.0"
 }
 
 group 'org.hypertrace.example'
@@ -9,7 +11,11 @@ version '1.0'
 sourceCompatibility = 1.8
 
 repositories {
-    mavenCentral()
+    mavenLocal()
+    gradlePluginPortal()
+    maven {
+        url 'https://hypertrace.jfrog.io/artifactory/maven'
+    }
 }
 
 application {
@@ -22,28 +28,27 @@ jar {
                 "Main-Class": "org.example.metric.Entry"
         )
     }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+//    from {
+//        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
 }
 
 dependencies {
     // general
-    compile ("org.apache.commons:commons-lang3:3.12.0")
-    compile("org.apache.logging.log4j:log4j-slf4j-impl:2.13.3")
-    compile("org.slf4j:slf4j-simple:1.7.30")
-    compile("io.grpc:grpc-core:1.36.0")
-    compile("io.grpc:grpc-netty-shaded:1.36.0")
+    implementation ("org.apache.commons:commons-lang3:3.12.0")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.13.3")
+    implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("io.grpc:grpc-core:1.36.0")
+    implementation("io.grpc:grpc-netty-shaded:1.36.0")
 
     // open telemetry
-    compile("io.opentelemetry:opentelemetry-api:1.4.1")
-    compile("io.opentelemetry:opentelemetry-api-metrics:1.4.1-alpha")
-    compile("io.opentelemetry:opentelemetry-sdk-metrics:1.4.1-alpha")
-    compile("io.opentelemetry:opentelemetry-sdk:1.4.1")
-    compile("io.opentelemetry:opentelemetry-exporter-otlp:1.4.1")
-    compile("io.opentelemetry:opentelemetry-sdk-metrics:1.4.1-alpha")
-    compile("io.opentelemetry:opentelemetry-exporter-otlp-metrics:1.4.1-alpha")
+    implementation("io.opentelemetry:opentelemetry-api:1.4.1")
+    implementation("io.opentelemetry:opentelemetry-api-metrics:1.4.1-alpha")
+    implementation("io.opentelemetry:opentelemetry-sdk:1.4.1")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp:1.4.1")
+    implementation("io.opentelemetry:opentelemetry-sdk-metrics:1.4.1-alpah")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp-metrics:1.4.1-alpha")
 
     // test
-    testCompile("junit:junit:4.12")
+    testImplementation("junit:junit:4.12")
 }

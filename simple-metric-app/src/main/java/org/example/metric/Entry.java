@@ -1,32 +1,36 @@
 package org.example.metric;
 
 import io.grpc.ManagedChannelBuilder;
-import io.opentelemetry.api.metrics.DoubleCounter;
 import io.opentelemetry.api.metrics.GlobalMeterProvider;
 import io.opentelemetry.api.metrics.Meter;
-import io.opentelemetry.api.metrics.common.Labels;
 import io.opentelemetry.exporter.otlp.metrics.OtlpGrpcMetricExporter;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.IntervalMetricReader;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class Entry {
 
   public static void main(String[] args) {
+    System.out.println("welcome to sample metrics example");
+
+    // read envs
+    String host = "localhost";
+    host = System.getenv("OTEL_COLLECTOR_HOST");
+
+    int port = 4317;
+    port = Integer.parseInt(System.getenv("OTEL_COLLECTOR_PORT"));
+
     // create a global metric provider (holds all metrics)
     SdkMeterProvider sdkMeterProvider = SdkMeterProvider.builder().buildAndRegisterGlobal();
 
     // export all the metrics in otlp format to an instance (localhost, 4317)
     MetricExporter metricExporter = OtlpGrpcMetricExporter.builder()
-        .setChannel(ManagedChannelBuilder.forAddress("localhost", 4317)
+        .setChannel(ManagedChannelBuilder.forAddress(host, port)
             .usePlaintext().build())
         .build();
 
-    // Regularly export metrics.
+    // Regularly export metrics every 10seconds
     // is this part working? I doubt that.
     IntervalMetricReader intervalMetricReader =
         IntervalMetricReader.builder()
@@ -40,49 +44,43 @@ public class Entry {
     Meter meter =
         GlobalMeterProvider.get().get("io.opentelemetry.example.metrics", "1.4.1");
 
-    DoubleCounter diskSpaceCounter =
-        meter
-            .doubleCounterBuilder("calculated_used_space")
-            .setDescription("Counts disk space used by file extension.")
-            .setUnit("MB")
-            .build();
+    // create different metrics
+    CounterExample counterExample = new CounterExample(meter);
+    SummaryExample summaryExample = new SummaryExample(meter);
+    UpDownCounterExample upDownCounterExample = new UpDownCounterExample(meter);
 
-    Entry example = new Entry();
-    List<String> extensionsToFind = new ArrayList<>();
-    extensionsToFind.add("png");
-    for (int i = 0; i < 100; i++) {
-      example.calculateSpaceUsedByFilesWithExtension(extensionsToFind,
-          new File("/Users/ronak/Desktop"), diskSpaceCounter);
-      try {
-        Thread.sleep((long)(Math.random() * 1000));
-      } catch (InterruptedException e) {
-        System.out.println("Intruppted");
-      }
+    // run while loop, and sleep for sometime.
+    System.out.println("starting while loop");
+    int counter = 0;
+    while(true) {
+      waitForSec();
 
-      if (i % 10 == 0) {
+      System.out.println("Updating metrics randomly after a sec");
+      // calculate disk space every 1 seconds
+      counterExample.calculate();
+
+      // do latency work every 1 seconds
+      summaryExample.doWork();
+
+      // do some work and increment memory usage
+      upDownCounterExample.updateUsage();
+
+      // report metrics every 10 seconds explicitly, and reset counter
+      counter++;
+      if (counter % 10 == 0) {
+        System.out.println("Reporting metrics after a 10 secs, and resetting counter");
         metricExporter.export(sdkMeterProvider.collectAllMetrics());
-      }
-
-    }
-
-
-  }
-
-
-  public void calculateSpaceUsedByFilesWithExtension(List<String> extensions, File directory, DoubleCounter diskSpaceCounter) {
-    File[] files = directory.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        for (String extension : extensions) {
-          if (file.getName().endsWith("." + extension)) {
-            // we can add values to the counter for specific labels
-            // the label key is "file_extension", its value is the name of the extension
-            diskSpaceCounter.add(
-                (double) file.length() / 1_000_000, Labels.of("file_extension", extension));
-          }
-        }
+        counter = 0;
       }
     }
   }
 
+  static void waitForSec() {
+    System.out.println("waiting for a sec");
+    try {
+      Thread.sleep(1000L);
+    } catch (InterruptedException e) {
+      System.out.println("Interuppted");
+    }
+  }
 }
