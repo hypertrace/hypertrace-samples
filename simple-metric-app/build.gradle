@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'org.hypertrace.example'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClassName = "org.example.metric.Entry"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "org.example.metric.Entry"
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+    // general
+    compile ("org.apache.commons:commons-lang3:3.12.0")
+    compile("org.apache.logging.log4j:log4j-slf4j-impl:2.13.3")
+    compile("org.slf4j:slf4j-simple:1.7.30")
+    compile("io.grpc:grpc-core:1.36.0")
+    compile("io.grpc:grpc-netty-shaded:1.36.0")
+
+    // open telemetry
+    compile("io.opentelemetry:opentelemetry-api:1.4.1")
+    compile("io.opentelemetry:opentelemetry-api-metrics:1.4.1-alpha")
+    compile("io.opentelemetry:opentelemetry-sdk-metrics:1.4.1-alpha")
+    compile("io.opentelemetry:opentelemetry-sdk:1.4.1")
+    compile("io.opentelemetry:opentelemetry-exporter-otlp:1.4.1")
+    compile("io.opentelemetry:opentelemetry-sdk-metrics:1.4.1-alpha")
+    compile("io.opentelemetry:opentelemetry-exporter-otlp-metrics:1.4.1-alpha")
+
+    // test
+    testCompile("junit:junit:4.12")
+}
