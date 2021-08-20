@@ -15,14 +15,9 @@ Use pre-built public container images that are easy to deploy by deploying the [
 
 1. `git clone https://github.com/hypertrace/hypertrace-samples.git`
 2. `cd online-boutique-demo`
-2. Run `kubectl apply -f ./release/kubernetes-manifests.yaml` to deploy the sample app.
-3. Run `kubectl get pods` to confirm pods are in a Ready state.
-4. Find the `NodePort` of your application, then visit the application at `localhost:nodeport` in your
-   browser to confirm installation. 
-
-   ```sh
-   kubectl get service/frontend-external
-   ```
+3. Run `kubectl apply -f ./release/kubernetes-manifests.yaml` to deploy the sample app.
+4. Run `kubectl get pods` to confirm pods are in a Ready state.
+5. Then go to http://127.0.0.1 for web UI.
 
 #### This is how your application will look like!
 
