@@ -12,7 +12,7 @@ RUN dep ensure --vendor-only -v
 COPY . .
 RUN go install .
 
-FROM alpine as release
+FROM alpine:3 as release
 RUN apk add --no-cache ca-certificates \
     busybox-extras net-tools bind-tools
 WORKDIR /frontend
