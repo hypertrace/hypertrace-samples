@@ -1,27 +1,32 @@
 package org.example.metric;
 
-import io.opentelemetry.api.metrics.DoubleCounter;
+import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.metrics.common.Labels;
 
 public class CounterExample {
-  private DoubleCounter doubleCounter;
+  private int maxRequest = 1000;
+  private LongCounter longCounter;
+  private int instances = 2;
 
   public CounterExample(Meter meter) {
 
-    this.doubleCounter = meter
-        .doubleCounterBuilder("counter_example_space_used")
-        .setDescription("Randomly increment the counter as disk space")
-        .setUnit("MB")
+    this.longCounter = meter
+        .longCounterBuilder("request_count")
+        .setDescription("Randomly increment the number of calls")
+        .setUnit("NN")
         .build();
   }
 
-  public void calculate() {
+  public void makeRequest() {
+    for(int i = 0; i < instances; i++) {
+      Labels labels = Labels.of(
+          "instance_id", String.format("simple-metric-app-instance-%d", i),
+          "service_name", "simple-metrics-app",
+          "api_name","/api/v1/request");
 
-    // we can add values to the counter for specific labels
-    // the label key is "file_extension", its value is the name of the extension
-
-    Double fileLength = Math.random() * 100;
-    doubleCounter.add(fileLength, Labels.of("counter_example", "random_disk_space"));
+      long numRequests = (long) (Math.random() * maxRequest);
+      longCounter.add(numRequests, labels);
+    }
   }
 }
