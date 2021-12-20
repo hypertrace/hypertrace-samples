@@ -171,47 +171,48 @@ public final class AdService {
   }
 
   private static ImmutableListMultimap<String, Ad> createAdsMap() {
-    Ad camera =
+    Ad hairdryer =
         Ad.newBuilder()
             .setRedirectUrl("/product/2ZYFJ3GM2N")
-            .setText("Film camera for sale. 50% off.")
+            .setText("Hairdryer for sale. 50% off.")
             .build();
-    Ad lens =
+    Ad tankTop =
         Ad.newBuilder()
             .setRedirectUrl("/product/66VCHSJNUP")
-            .setText("Vintage camera lens for sale. 20% off.")
+            .setText("Tank top for sale. 20% off.")
             .build();
-    Ad recordPlayer =
+    Ad candleHolder =
         Ad.newBuilder()
             .setRedirectUrl("/product/0PUK6V6EV0")
-            .setText("Vintage record player for sale. 30% off.")
+            .setText("Candle holder for sale. 30% off.")
             .build();
-    Ad bike =
+    Ad bambooGlassJar =
         Ad.newBuilder()
             .setRedirectUrl("/product/9SIQT8TOJO")
-            .setText("City Bike for sale. 10% off.")
+            .setText("Bamboo glass jar for sale. 10% off.")
             .build();
-    Ad baristaKit =
+    Ad watch =
         Ad.newBuilder()
             .setRedirectUrl("/product/1YMWWN1N4O")
-            .setText("Home Barista kitchen kit for sale. Buy one, get second kit for free")
+            .setText("Watch for sale. Buy one, get second kit for free")
             .build();
-    Ad airPlant =
+    Ad mug =
         Ad.newBuilder()
             .setRedirectUrl("/product/6E92ZMYYFZ")
-            .setText("Air plants for sale. Buy two, get third one for free")
+            .setText("Mug for sale. Buy two, get third one for free")
             .build();
-    Ad terrarium =
+    Ad loafers =
         Ad.newBuilder()
             .setRedirectUrl("/product/L9ECAV7KIM")
-            .setText("Terrarium for sale. Buy one, get second one for free")
+            .setText("Loafers for sale. Buy one, get second one for free")
             .build();
     return ImmutableListMultimap.<String, Ad>builder()
-        .putAll("photography", camera, lens)
-        .putAll("vintage", camera, lens, recordPlayer)
-        .put("cycling", bike)
-        .put("cookware", baristaKit)
-        .putAll("gardening", airPlant, terrarium)
+        .putAll("clothing", tankTop)
+        .putAll("accessories", watch)
+        .putAll("footwear", loafers)
+        .putAll("hair", hairdryer)
+        .putAll("decor", candleHolder)
+        .putAll("kitchen", bambooGlassJar, mug)
         .build();
   }
 
@@ -314,14 +315,7 @@ public final class AdService {
   /** Main launches the server from the command line. */
   public static void main(String[] args) throws IOException, InterruptedException {
     // Registers all RPC views.
-    /*
-     [TODO:rghetia] replace registerAllViews with registerAllGrpcViews. registerAllGrpcViews
-     registers new views using new measures however current grpc version records against old
-     measures. When new version of grpc (0.19) is release revert back to new. After reverting back
-     to new the new measure will not provide any tags (like method). This will create some
-     discrepencies when compared grpc measurements in Go services.
-    */
-    RpcViews.registerAllViews();
+    RpcViews.registerAllGrpcViews();
 
     new Thread(
             () -> {
