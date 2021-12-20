@@ -15,18 +15,24 @@
 # limitations under the License.
 
 import random
-from locust import HttpLocust, TaskSet, between
+from locust import HttpUser, TaskSet, between
 
 products = [
     '0PUK6V6EV0',
     '1YMWWN1N4O',
-    '2ZYFJ3GM2N']
+    '2ZYFJ3GM2N',
+    '66VCHSJNUP',
+    '6E92ZMYYFZ',
+    '9SIQT8TOJO',
+    'L9ECAV7KIM',
+    'LS4PSXUNUM',
+    'OLJCESPC7Z']
 
 def index(l):
     l.client.get("/")
 
 def setCurrency(l):
-    currencies = ['USD', 'JPY']
+    currencies = ['EUR', 'USD', 'JPY', 'CAD']
     l.client.post("/setCurrency",
         {'currency_code': random.choice(currencies)})
 
@@ -41,7 +47,7 @@ def addToCart(l):
     l.client.get("/product/" + product)
     l.client.post("/cart", {
         'product_id': product,
-        'quantity': random.choice([1,2,3])})
+        'quantity': random.choice([1,2,3,4,5,10])})
 
 def checkout(l):
     addToCart(l)
@@ -64,12 +70,12 @@ class UserBehavior(TaskSet):
         index(self)
 
     tasks = {index: 1,
-        setCurrency: 1,
-        browseProduct: 1,
-        addToCart: 1,
-        viewCart: 1,
+        setCurrency: 2,
+        browseProduct: 10,
+        addToCart: 2,
+        viewCart: 3,
         checkout: 1}
 
-class WebsiteUser(HttpLocust):
-    task_set = UserBehavior
+class WebsiteUser(HttpUser):
+    tasks = [UserBehavior]
     wait_time = between(1, 10)

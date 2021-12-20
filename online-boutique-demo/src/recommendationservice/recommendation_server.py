@@ -24,11 +24,10 @@ import googleclouddebugger
 import googlecloudprofiler
 from google.auth.exceptions import DefaultCredentialsError
 import grpc
-from opencensus.trace.exporters import print_exporter
-from opencensus.trace.exporters import stackdriver_exporter
-from opencensus.trace.ext.grpc import server_interceptor
+from opencensus.ext.stackdriver import trace_exporter as stackdriver_exporter
+from opencensus.ext.grpc import server_interceptor
+from opencensus.trace import samplers
 from opencensus.common.transports.async_ import AsyncTransport
-from opencensus.trace.samplers import always_on
 
 import demo_pb2
 import demo_pb2_grpc
@@ -46,7 +45,7 @@ def initStackdriverProfiling():
     # Environment variable not set
     pass
 
-  for retry in xrange(1,4):
+  for retry in range(1,4):
     try:
       if project_id:
         googlecloudprofiler.start(service='recommendation_server', service_version='1.0.0', verbose=0, project_id=project_id)
@@ -86,6 +85,10 @@ class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
         return health_pb2.HealthCheckResponse(
             status=health_pb2.HealthCheckResponse.SERVING)
 
+    def Watch(self, request, context):
+        return health_pb2.HealthCheckResponse(
+            status=health_pb2.HealthCheckResponse.UNIMPLEMENTED)
+
 
 if __name__ == "__main__":
     logger.info("initializing recommendationservice")
@@ -104,7 +107,7 @@ if __name__ == "__main__":
         raise KeyError()
       else:
         logger.info("Tracing enabled.")
-        sampler = always_on.AlwaysOnSampler()
+        sampler = samplers.AlwaysOnSampler()
         exporter = stackdriver_exporter.StackdriverExporter(
           project_id=os.environ.get('GCP_PROJECT_ID'),
           transport=AsyncTransport)
@@ -112,8 +115,10 @@ if __name__ == "__main__":
     except (KeyError, DefaultCredentialsError):
         logger.info("Tracing disabled.")
         tracer_interceptor = server_interceptor.OpenCensusServerInterceptor()
-
-
+    except Exception as e:
+        logger.warn(f"Exception on Cloud Trace setup: {traceback.format_exc()}, tracing disabled.") 
+        tracer_interceptor = server_interceptor.OpenCensusServerInterceptor()
+   
     try:
       if "DISABLE_DEBUGGER" in os.environ:
         raise KeyError()
@@ -124,11 +129,11 @@ if __name__ == "__main__":
               module='recommendationserver',
               version='1.0.0'
           )
-        except Exception, err:
+        except (Exception, DefaultCredentialsError):
             logger.error("Could not enable debugger")
             logger.error(traceback.print_exc())
             pass
-    except KeyError:
+    except (Exception, DefaultCredentialsError):
         logger.info("Debugger disabled.")
 
     port = os.environ.get('PORT', "8080")
