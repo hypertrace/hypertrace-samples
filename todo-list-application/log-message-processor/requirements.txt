@@ -1,3 +1,0 @@
-redis==2.10.6
-py_zipkin==0.11.0
-requests
