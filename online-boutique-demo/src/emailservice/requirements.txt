@@ -44,7 +44,7 @@ googleapis-common-protos==1.52.0
     # via google-api-core
 grpcio-health-checking==1.33.2
     # via -r requirements.in
-grpcio==1.33.2
+grpcio==1.53.2
     # via
     #   -r requirements.in
     #   google-api-core
