@@ -107,7 +107,7 @@ six==1.15.0
     #   protobuf
 uritemplate==3.0.1
     # via google-api-python-client
-urllib3==1.25.10
+urllib3==1.26.18
     # via requests
 
 # The following packages are considered to be unsafe in a requirements file:
