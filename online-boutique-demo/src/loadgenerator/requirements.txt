@@ -24,7 +24,7 @@ pyzmq==19.0.2             # via locust
 requests==2.24.0          # via locust
 six==1.15.0               # via geventhttpclient
 urllib3==1.25.10          # via requests
-werkzeug==1.0.1           # via flask, locust
+werkzeug==3.0.1           # via flask, locust
 zope.event==4.5.0         # via gevent
 zope.interface==5.1.0     # via gevent
 
