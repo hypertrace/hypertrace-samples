@@ -1,7 +1,7 @@
 # ARG VERSION=1.0
 # ARG HYPERTRACE_AGENT_VERSION=1.0.5
 
-FROM openjdk:11.0.10-jdk-buster
+FROM openjdk:11.0.11-jdk-buster
 WORKDIR /app
 RUN wget https://github.com/hypertrace/javaagent/releases/download/1.0.5/hypertrace-agent-all.jar && ls .
 COPY build/libs libs/
